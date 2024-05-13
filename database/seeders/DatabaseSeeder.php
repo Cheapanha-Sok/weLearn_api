@@ -21,7 +21,7 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        User::factory(10)->create();
+        // User::factory(10)->create();
 
         Type::insert([
             ['name' => 'science'],
@@ -58,7 +58,42 @@ class DatabaseSeeder extends Seeder
             ['name' => 'meduim', 'point' => 4],
             ['name' => 'hard', 'point' => 6]
         ]);
+        
 
+        ExamDate::insert([
+            ['name' => '2017'],
+            ['name' => '2018'],
+            ['name' => '2019'],
+            ['name' => '2020'],
+            ['name' => '2021'],
+            ['name' => '2022'],
+            ['name' => '2023'],
+        ]);
+
+
+        User::insert([
+            ['name' => "panha", "email" => "panha@gmail.com", "isGraduate" => false, "isAdmin" => true, 'password' => Hash::make('password')],
+            ['name' => "lyhuy", "email" => "lyhuy@gmail.com", "isGraduate" => false, "isAdmin" => true, 'password' => Hash::make('password')],
+            ['name' => "rady", "email" => "rady@gmail.com", "isGraduate" => false, "isAdmin" => true, 'password' => Hash::make('password')],
+            ['name' => "reaksa", "email" => "reaksa@gmail.com", "isGraduate" => false, "isAdmin" => true, 'password' => Hash::make('password')],
+            ['name' => "huy", "email" => "huy@gmail.com", "isGraduate" => false, "isAdmin" => true, 'password' => Hash::make('password')],
+        ]);
+
+        for ($i = 0; $i < 5; $i++) {
+            $name = "user" . ($i + 1);
+            $email = "user" . ($i + 1) . "@example.com";
+            User::insert(['name' => $name, "email" => $email, "isGraduate" => false, "isAdmin" => false, 'password' => Hash::make('password')]);
+        }
+        Rank::insert([
+            ['point' => 80, 'user_id' => 1],
+            ['point' => 70, 'user_id' => 2],
+            ['point' => 60, 'user_id' => 3],
+            ['point' => 50, 'user_id' => 4],
+            ['point' => 40, 'user_id' => 5],
+            ['point' => 30, 'user_id' => 6],
+            ['point' => 20, 'user_id' => 7],
+            ['point' => 10, 'user_id' => 8],
+        ]);
         Question::insert([
             ['name'=>"What is 5 plus 3?" , "level_id" => 1 , "category_id" => 1 , "isGraduate"=>false],
             ['name'=>"What is 10 minus 5?" , "level_id" => 1 , "category_id" => 1 , "isGraduate"=>false],
@@ -162,54 +197,6 @@ class DatabaseSeeder extends Seeder
             ['name' => 7 , "is_correct" => true , "question_id" => 20],
             ['name' => 6 , "is_correct" => false , "question_id" => 20],
             ['name' => 8 , "is_correct" => false , "question_id" => 20],
-
-
-        
-            // Continue inserting choices for each question...
-        ]);
-        
-
-        ExamDate::insert([
-            ['name' => '2017'],
-            ['name' => '2018'],
-            ['name' => '2019'],
-            ['name' => '2020'],
-            ['name' => '2021'],
-            ['name' => '2022'],
-            ['name' => '2023'],
-        ]);
-
-
-        User::insert([
-            ['name' => "panha", "email" => "panha@gmail.com", "isGraduate" => false, "isAdmin" => true, 'password' => Hash::make('password')],
-            ['name' => "lyhuy", "email" => "lyhuy@gmail.com", "isGraduate" => false, "isAdmin" => true, 'password' => Hash::make('password')],
-            ['name' => "rady", "email" => "rady@gmail.com", "isGraduate" => false, "isAdmin" => true, 'password' => Hash::make('password')],
-            ['name' => "reaksa", "email" => "reaksa@gmail.com", "isGraduate" => false, "isAdmin" => true, 'password' => Hash::make('password')],
-            ['name' => "huy", "email" => "huy@gmail.com", "isGraduate" => false, "isAdmin" => true, 'password' => Hash::make('password')],
-        ]);
-
-        for ($i = 0; $i < 5; $i++) {
-            $name = "user" . ($i + 1);
-            $email = "user" . ($i + 1) . "@example.com";
-            User::insert(['name' => $name, "email" => $email, "isGraduate" => false, "isAdmin" => false, 'password' => Hash::make('password')]);
-        }
-        Rank::insert([
-            ['point' => 80, 'user_id' => 1],
-            ['point' => 70, 'user_id' => 2],
-            ['point' => 60, 'user_id' => 3],
-            ['point' => 50, 'user_id' => 4],
-            ['point' => 40, 'user_id' => 5],
-            ['point' => 30, 'user_id' => 6],
-            Question::insert([
-                ['name'=>"what is 4 plus 4" , "level_id" => 1 , "category_id" => 1 , "isGraduate"=>false]
-            ]);
-    
-            Choice::insert([
-                ['name' => 8 , "is_correct" => true , "question_id" => 1],
-                ['name' => 4 , "is_correct" => false , "question_id" => 1],
-                ['name' => 5 , "is_correct" => false , "question_id" => 1]
-            ]);  ['point' => 20, 'user_id' => 7],
-            ['point' => 10, 'user_id' => 8],
         ]);
     }
 }
