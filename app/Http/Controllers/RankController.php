@@ -21,7 +21,7 @@ class RankController extends BaseController
         if ($existingRank) {
             // If the record exists, update it.
             $existingRank->point += $request->input('point');
-            $existingRank->save(); // Save the changes.
+            $existingRank->update(); // Save the changes.
         } else {
             // If the record doesn't exist, create a new one.
             Rank::create([

@@ -22,7 +22,7 @@ class UserController extends BaseController
         if ($request->input('isGraduate') !== null && $user->name !== $request->input('isGraduate')) {
             $user->isGraduate = $request->input('isGraduate');
         }
-        $user->save();
+        $user->update();
         return $this->sendMessage("Update user with id $userId success");
     }
 }

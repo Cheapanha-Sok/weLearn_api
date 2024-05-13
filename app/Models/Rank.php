@@ -15,15 +15,13 @@ class Rank extends Model
     protected $fillable = [
         'point',
         'user_id',
-        'category_id',
-        'level_id'
     ];
     protected $hidden = [
         'created_at',
         'updated_at',
     ];
     public function user() : BelongsTo{
-        return $this->belongsTo(User::class)->withDefault();
+        return $this->belongsTo(User::class);
     }
 
 }
