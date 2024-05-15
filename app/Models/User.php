@@ -5,6 +5,7 @@ namespace App\Models;
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
@@ -46,7 +47,15 @@ class User extends Authenticatable
             'password' => 'hashed',
         ];
     }
-    public function userRank() : HasOne{
+    public function rank(): HasOne
+    {
         return $this->hasOne(Rank::class);
     }
+
+    public function completedQuestions(): BelongsToMany
+    {
+        return $this->belongsToMany(Question::class, 'user_question');
+    }
+
+
 }

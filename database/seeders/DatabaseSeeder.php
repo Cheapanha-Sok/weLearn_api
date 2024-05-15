@@ -94,6 +94,7 @@ class DatabaseSeeder extends Seeder
             ['point' => 20, 'user_id' => 7],
             ['point' => 10, 'user_id' => 8],
         ]);
+        
         Question::insert([
             ['name'=>"What is 5 plus 3?" , "level_id" => 1 , "category_id" => 1 , "isGraduate"=>false],
             ['name'=>"What is 10 minus 5?" , "level_id" => 1 , "category_id" => 1 , "isGraduate"=>false],

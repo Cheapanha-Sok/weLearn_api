@@ -33,3 +33,4 @@ Route::apiResource('type', TypeController::class);
 Route::get('pdf/{examdate_id}/{category_id}', [PdfController::class, 'show']);
 Route::get('pdfType/{type_id}', [PdfController::class, 'showByType']);
 
+

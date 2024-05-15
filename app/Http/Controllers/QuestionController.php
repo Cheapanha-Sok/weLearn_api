@@ -4,32 +4,43 @@ namespace App\Http\Controllers;
 
 use App\Http\Controllers\Response\BaseController;
 use App\Http\Requests\QuestionRequest;
-use Illuminate\Support\Facades\Log;
-use App\Models\Category;
+use App\Http\Resources\QuestionResource;
 use App\Models\Choice;
-use App\Models\Level;
 use App\Models\Question;
+use App\Models\UserQuestion;
 use Exception;
+use Illuminate\Contracts\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class QuestionController extends BaseController
 {
-    public function index()
-    {
-        $questions = Question::with('choices')->get();
-        return $this->sendResponse($questions , "fetch question");
-    }
-
     public function show($categoryId, $levelId)
     {
+        $user = Auth::user();
+        $indentityUser = $user->isGraduate;
+
+        // Fetch question IDs that the user has already completed
+        $completedQuestionIds = UserQuestion::where('user_id', $user->id)
+            ->pluck('question_id')
+            ->toArray();
+
+        // Fetch questions excluding the completed ones
         $questions = Question::with('choices')
-            ->join('levels', 'questions.level_id', '=', 'levels.id')
-            ->join('categories', 'questions.category_id', '=', 'categories.id')
-            ->select('questions.id', 'questions.name', 'levels.name as level', 'categories.name as category', 'levels.point as point')
-            ->where("questions.category_id", $categoryId)
-            ->where('questions.level_id', $levelId)
+            ->where('isGraduate', $indentityUser)
+            ->whereHas('level', function (Builder $query) use ($levelId) {
+                $query->where('id', $levelId);
+            })
+            ->whereHas('category', function (Builder $query) use ($categoryId) {
+                $query->where('id', $categoryId);
+            })
+            ->whereNotIn('id', $completedQuestionIds) // Exclude completed questions
             ->get();
-        return $this->sendResponse($questions, "fetch question list");
+
+        // Shuffle and take 10 questions
+        $randomTenQuestion = $questions->shuffle()->take(10)->values();
+
+        return $this->sendResponse(QuestionResource::collection($randomTenQuestion), "fetch question list");
     }
 
 
@@ -55,12 +66,14 @@ class QuestionController extends BaseController
         } catch (Exception $e) {
             return $this->sendError($e, "Something when wrong during delete question");
         }
-
     }
     public function store(QuestionRequest $request)
     {
         try {
+            // Validate the request
             $request->validated();
+
+            // Create the question
             $question = Question::create([
                 'name' => $request->input('name'),
                 'category_id' => $request->input('category_id'),
@@ -68,31 +81,33 @@ class QuestionController extends BaseController
                 'isGraduate' => $request->input('isGraduate')
             ]);
 
+            // Prepare choices data
             $choicesData = $request->input('choices');
-
-            foreach ($choicesData as $choiceData) {
-                $choiceName = $choiceData['name'];
-                $isCorrect = $choiceData['is_correct'];
-
-                $this->saveChoice($choiceName, $isCorrect, $question->id);
+            $choices = [];
+            foreach ($choicesData as $choice) {
+                $choices[] = [
+                    'name' => $choice['name'],
+                    'is_correct' => $choice['is_correct'],
+                    'question_id' => $question->id,
+                ];
             }
+            // Save the choices
+            $this->saveChoice($choices);
             return $this->sendMessage('Question created successfully');
         } catch (Exception $e) {
-            return $this->sendError($e, 'Something went wrong during create question');
+            return $this->sendError('Something went wrong during create question', 500, $e->getMessage());
         }
     }
 
-    private function saveChoice($choiceName, $isCorrect, $questionId)
+    private function saveChoice($choices)
     {
         try {
-            Choice::create([
-                'name' => $choiceName,
-                'is_correct' => $isCorrect,
-                'question_id' => $questionId
-            ]);
+            // Insert the choices into the database
+            Choice::insert($choices);
         } catch (Exception $e) {
-            return $this->sendError($e, 'Something went wrong during save choice', 500);
+            throw new Exception('Something went wrong during save choice: ' . $e->getMessage(), 500);
         }
     }
+
 
 }

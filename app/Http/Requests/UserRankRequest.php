@@ -25,6 +25,7 @@ class UserRankRequest extends FormRequest
             'point' => 'required|min:0',
             'category_id' => 'required',
             'level_id' => 'required',
+            'questions' =>'required|array'
         ];
     }
 }
