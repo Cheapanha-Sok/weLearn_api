@@ -9,12 +9,12 @@ class QuestionRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'name' => 'required|string',
+            'name' => 'required|string|lowercase',
             'category_id' => 'required|int',
             'level_id' => 'required|int',
             'isGraduate' => 'required',
             'choices' => 'required|array|min:3|max:3',
-            'choices.*.name' => 'required|string',
+            'choices.*.name' => 'required|string|lowercase',
             'choices.*.is_correct' => 'required',
         ];
     }

@@ -3,61 +3,37 @@
 namespace App\Http\Controllers;
 
 use App\Http\Controllers\Response\BaseController;
+use App\Http\Requests\ExamDateRequest;
 use App\Models\ExamDate;
-use Exception;
-use Illuminate\Http\Request;
 
 class ExamDateController extends BaseController
 {
     public function index()
     {
-        return $this->sendResponse(ExamDate::get(), "fetch all exam date");
+        return $this->sendSuccess(ExamDate::get(), "fetch all exam date");
     }
-    public function store(Request $request)
+    public function store(ExamDateRequest $request)
     {
-        try {
-            $request->validate([
-                "name" => ["required", "string"],
-            ]);
-            $examDate = new ExamDate();
-            $examDate->name = $request->input('name');
-            $examDate->save();
-        } catch (Exception $e) {
-            return $this->sendError($e, "something wihen wrong", 500);
-        }
+        $validated = $request->validated();
+        $examDate = ExamDate::create($validated);
+        return $this->sendSuccess([$examDate], "create examdate successful");
 
     }
     public function show(int $id)
     {
-        try {
-            return $this->sendResponse(ExamDate::findOrFail($id), "get 1 exam date");
-        } catch (Exception $e) {
-            return $this->sendError($e, "somthing when wrong", 500);
-        }
-    }
-    public function destroy(int $id)
-    {
-        try {
-            $examDate = ExamDate::findOrFail($id);
-            $examDate->delete();
-            return $this->sendResponse(["id", $id], "remove exam date successful");
-        } catch (Exception $e) {
-            return $this->sendError($e, "somthing when wrong", 500);
-        }
+        return $this->sendSuccess(ExamDate::findOrFail($id), "get 1 exam date");
 
     }
-    public function edit(int $id, Request $request)
+    public function destroy(ExamDate $examDate)
     {
-        try {
-            $examDate = ExamDate::findOrFail($id);
-            if ($request->input('name') != null) {
-                $examDate->exam_date = $request->input('name');
-                $examDate->save();
-                return $this->sendResponse(["id", $id], "edit exam date successful");
-            }
-        } catch (Exception $e) {
-            return $this->sendError($e, "somthing when wrong", 500);
-        }
+        $examDate->delete();
+        return $this->sendSuccess([], "remove exam date successful");
+    }
+    public function edit(ExamDateRequest $request, ExamDate $examDate)
+    {
+        $validated = $request->validated();
+        $examDate->update($validated);
+        return $this->sendSuccess([$examDate], "update examdate successful");
 
     }
 }

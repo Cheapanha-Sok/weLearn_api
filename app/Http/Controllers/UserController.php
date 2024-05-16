@@ -23,6 +23,6 @@ class UserController extends BaseController
             $user->isGraduate = $request->input('isGraduate');
         }
         $user->update();
-        return $this->sendMessage("Update user with id $userId success");
+        return $this->sendSuccess("Update user with id $userId success");
     }
 }

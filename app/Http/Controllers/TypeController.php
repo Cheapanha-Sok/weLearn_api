@@ -3,55 +3,38 @@
 namespace App\Http\Controllers;
 
 use App\Http\Controllers\Response\BaseController;
+use App\Http\Requests\TypeRequest;
 use App\Http\Resources\TypeResource;
 use App\Models\Type;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Validator;
 
 
 class TypeController extends BaseController
 {
     public function index()
     {
-        return $this->sendResponse(TypeResource::collection(Type::get()), "type list");
+        return $this->sendSuccess(TypeResource::collection(Type::get()), "type list");
     }
-
     public function show($id)
     {
-        $type = Type::with('categories')->find($id);
-
-        if (!$type) {
-            return $this->sendError("type with $id not found");
-        }
-
-        return $this->sendResponse(new TypeResource($type), "type object");
+        $type = Type::with('categories')->findOrFail($id);
+        return $this->sendSuccess(new TypeResource($type), "type object");
     }
-    public function store(Request $request)
+    public function store(TypeRequest $request)
     {
-        // Validate the request data
-        $validator = Validator::make($request->all(), [
-            'name' => 'required|string|lowercase|unique:types',
-        ]);
-        if ($validator->fails()) {
-            return $this->sendError('Failed validation');
-        }
-        $type = Type::create([$request]);
-        return $this->sendResponse($type, "create type success");
+        $validated = $request->validated();
+        $type = Type::create($validated);
+        return $this->sendSuccess([$type], "create type success");
     }
 
-    public function edit(Request $request, $id)
+    public function edit(TypeRequest $request, Type $type)
     {
-        $type = Type::findOrFail($id);
-        if ($request->input('name') != "") {
-            $type->name = $request->input("name");
-            $updatedType = $type->save();
-            return $this->sendResponse($updatedType, "updated type succesful");
-        }
+        $validated = $request->validated();
+        $type->update($validated);
+        return $this->sendSuccess([$type], "updated type succesful");
     }
-    public function destroy($id)
+    public function destroy(Type $type)
     {
-        $type = Type::findOrFail($id);
         $type->delete();
-        return $this->sendResponse($id, "remove type succesful");
+        return $this->sendSuccess([], "remove type succesful");
     }
 }

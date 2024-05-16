@@ -8,7 +8,6 @@ use App\Http\Resources\QuestionResource;
 use App\Models\Choice;
 use App\Models\Question;
 use App\Models\UserQuestion;
-use Exception;
 use Illuminate\Contracts\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -40,7 +39,7 @@ class QuestionController extends BaseController
         // Shuffle and take 10 questions
         $randomTenQuestion = $questions->shuffle()->take(10)->values();
 
-        return $this->sendResponse(QuestionResource::collection($randomTenQuestion), "fetch question list");
+        return $this->sendSuccess(QuestionResource::collection($randomTenQuestion), "fetch question list");
     }
 
 
@@ -55,58 +54,35 @@ class QuestionController extends BaseController
             }
         }
         return response()->json(['message' => "categories with id $id not found"], 404);
-
     }
-    public function destroy($id)
+    public function destroy(Question $question)
     {
-        try {
-            $question = Question::findOrFail($id);
-            $question->delete();
-            return $this->sendMessage("question with id $id remove sucessful");
-        } catch (Exception $e) {
-            return $this->sendError($e, "Something when wrong during delete question");
-        }
+        $question->delete();
+        return $this->sendSuccess([], "question remove sucessful");
     }
     public function store(QuestionRequest $request)
     {
-        try {
-            // Validate the request
-            $request->validated();
+        $validated = $request->validated();
+        $question = Question::create($validated);
 
-            // Create the question
-            $question = Question::create([
-                'name' => $request->input('name'),
-                'category_id' => $request->input('category_id'),
-                'level_id' => $request->input('level_id'),
-                'isGraduate' => $request->input('isGraduate')
-            ]);
-
-            // Prepare choices data
-            $choicesData = $request->input('choices');
-            $choices = [];
-            foreach ($choicesData as $choice) {
-                $choices[] = [
-                    'name' => $choice['name'],
-                    'is_correct' => $choice['is_correct'],
-                    'question_id' => $question->id,
-                ];
-            }
-            // Save the choices
-            $this->saveChoice($choices);
-            return $this->sendMessage('Question created successfully');
-        } catch (Exception $e) {
-            return $this->sendError('Something went wrong during create question', 500, $e->getMessage());
+        // Prepare choices data
+        $choicesData = $validated['choices'];
+        $choices = [];
+        foreach ($choicesData as $choice) {
+            $choices[] = [
+                'name' => $choice['name'],
+                'is_correct' => $choice['is_correct'],
+                'question_id' => $question->id,
+            ];
         }
+        // Save the choices
+        $this->saveChoice($choices);
+        return $this->sendSuccess('question create successfully');
     }
 
     private function saveChoice($choices)
     {
-        try {
-            // Insert the choices into the database
-            Choice::insert($choices);
-        } catch (Exception $e) {
-            throw new Exception('Something went wrong during save choice: ' . $e->getMessage(), 500);
-        }
+        Choice::insert($choices);
     }
 
 

@@ -14,7 +14,7 @@ return new class extends Migration {
         Schema::create('ranks', function (Blueprint $table) {
             $table->id();
             $table->integer('point')->default(0);
-            $table->foreignIdFor(User::class)->constrained();
+            $table->foreignIdFor(User::class)->constrained()->cascadeOnDelete();
             $table->timestamps();
         });
     }
