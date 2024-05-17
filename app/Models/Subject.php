@@ -11,7 +11,7 @@ class Subject extends Model
      *
      * @var string
      */
-    protected $table = 'pdfs';
+    protected $table = 'subjects';
 
     protected $fillable = ['category_id' , 'exam_date_id', 'pdfUrl'];
 
@@ -25,6 +25,6 @@ class Subject extends Model
     }
     public function examdate(): BelongsTo
     {
-        return $this->belongsTo(ExamDate::class);
+        return $this->belongsTo(ExamDate::class , 'exam_date_id');
     }
 }

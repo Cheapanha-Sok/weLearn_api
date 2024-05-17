@@ -4,56 +4,33 @@ namespace App\Http\Controllers;
 
 use App\Http\Controllers\Response\BaseController;
 use App\Http\Requests\SubjectRequest;
+use App\Http\Resources\SubjectResource;
 use App\Models\Category;
 use App\Models\ExamDate;
-use App\Models\Pdf;
 use App\Models\Subject;
 use CloudinaryLabs\CloudinaryLaravel\Facades\Cloudinary;
 use Illuminate\Contracts\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
 
 class SubjectController extends BaseController
 {
     public function show(int $examDateId, int $categoryId)
     {
 
-        $subject = Subject::with('category')->whereHas('category' , function(Builder $query) use($categoryId){
-            $query->where('id', $categoryId);
-        })->with('examdate')->whereHas('examdate' , function(Builder $query) use($examDateId){
-            $query->where('id' , $examDateId);
-        })->get();
-
-        return $this->sendSuccess($subject , "fetch object subject");
+        $subject = Subject::with(['category', 'examdate'])->
+            where('category_id', $categoryId)->where('exam_date_id', $examDateId)->first();
+        return $this->sendSuccess(new SubjectResource($subject), "fetch subject object");
     }
 
     public function showByType(int $typeId)
     {
-        $pdfs = DB::table('pdfs')
-            ->join('categories', 'pdfs.category_id', '=', 'categories.id')
-            ->join('category_type', 'categories.id', '=', 'category_type.category_id')
-            ->join('types', 'category_type.type_id', '=', 'types.id')
-            ->join('exam_dates', 'pdfs.exam_date_id', '=', 'exam_dates.id')
-            ->select('pdfs.id', 'pdfs.pdfUrl', 'categories.name as categoryName', 'types.name as typeName', 'exam_dates.name as examDate')
-            ->where('types.id', $typeId)
+        $subjects = Subject::with(['category', 'examdate'])->
+            whereHas('category.types', function (Builder $query) use ($typeId) {
+                $query->where('types.id', $typeId);
+            })
             ->get();
-
-        return response()->json($pdfs);
+        return $this->sendSuccess(SubjectResource::collection($subjects), "fetch subeject list");
     }
-
-    public function index()
-    {
-        $pdfs = DB::table('pdfs')
-            ->join('categories', 'pdfs.category_id', '=', 'categories.id')
-            ->join('category_type', 'categories.id', '=', 'category_type.category_id')
-            ->join('types', 'category_type.type_id', '=', 'types.id')
-            ->join('exam_dates', 'pdfs.exam_date_id', '=', 'exam_dates.id')
-            ->select('pdfs.id', 'pdfs.pdfUrl', 'categories.name as categoryName', 'types.name as typeName', 'exam_dates.name as examDate')
-            ->get();
-
-        return response()->json($pdfs);
-    }
-
 
     public function store(SubjectRequest $request)
     {
@@ -70,26 +47,22 @@ class SubjectController extends BaseController
         return $this->sendSuccess([$pdf], "create subject successful");
     }
 
-    public function destroy(int $id)
+    public function destroy(Subject $subject)
     {
-        $pdf = Subject::find($id);
-        if ($pdf) {
-            $url = $pdf->pdfUrl;
-            $parts = explode('/', $url);
-            $publicId = end($parts);
-            $publicId = pathinfo($publicId, PATHINFO_FILENAME);
-            $res = Cloudinary::destroy("pdf/$publicId");
-            if ($res['result'] == 'ok') {
-                $pdf->delete();
-                return response()->json(['message' => "PDF with id $id has been removed successfully"], 200);
-            } else
-                return response()->json(['error' => $res, $publicId], 500);
+        $url = $subject->pdfUrl;
+        $parts = explode('/', $url);
+        $publicId = end($parts);
+        $publicId = pathinfo($publicId, PATHINFO_FILENAME);
+        $res = Cloudinary::destroy("pdf/$publicId");
+        if ($res['result'] == 'ok') {
+            $subject->delete();
+            return $this->sendSuccess("remove subject success");
         } else
-            return response()->json(['message' => "pdf with id $id not found"], 404);
+            return $this->sendError("Something when wrong during remove pdf from cloud");
 
     }
 
-    public function edit(Request $request)
+    public function update(Request $request)
     {
         try {
             $pdf = Subject::find($request->input('subjectId'));

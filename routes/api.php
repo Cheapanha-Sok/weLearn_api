@@ -28,10 +28,10 @@ Route::middleware('auth:sanctum')->group(function () {
 
 Route::apiResource('category', CategoryController::class);
 Route::apiResource('examDate', ExamDateController::class);
-Route::apiResource('pdf', SubjectController::class);
+Route::apiResource('subject', SubjectController::class);
 Route::apiResource('level', LevelController::class);
 Route::apiResource('type', TypeController::class);
 Route::get('pdf/{examdate_id}/{category_id}', [SubjectController::class, 'show']);
-Route::get('pdfType/{type_id}', [SubjectController::class, 'showByType']);
+Route::get('subject/{type_id}', [SubjectController::class, 'showByType']);
 
 

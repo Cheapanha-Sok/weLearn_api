@@ -48,7 +48,7 @@ class RankController extends BaseController
     public function show($isGraduate)
     {
         $ranks = Rank::orderByDesc('point')
-            ->with('user')->whereHas('user', function (Builder $query) use ($isGraduate) {
+            ->whereHas('user', function (Builder $query) use ($isGraduate) {
                 $query->where('isGraduate', $isGraduate);
             })->limit(10)
             ->get();
