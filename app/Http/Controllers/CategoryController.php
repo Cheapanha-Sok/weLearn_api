@@ -6,8 +6,6 @@ use App\Http\Controllers\Response\BaseController;
 use App\Http\Requests\CategoryRequest;
 use App\Models\Category;
 use App\Models\Type;
-use Exception;
-use Illuminate\Support\Facades\Gate;
 
 class CategoryController extends BaseController
 {

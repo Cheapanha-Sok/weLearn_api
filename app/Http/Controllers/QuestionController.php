@@ -9,7 +9,6 @@ use App\Models\Choice;
 use App\Models\Question;
 use App\Models\UserQuestion;
 use Illuminate\Contracts\Database\Eloquent\Builder;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
 class QuestionController extends BaseController
@@ -25,8 +24,8 @@ class QuestionController extends BaseController
             ->toArray();
 
         // Fetch questions excluding the completed ones
-        $questions = Question::with('choices')
-            ->where('isGraduate', $indentityUser)
+        $questions = Question::where('isGraduate', $indentityUser)
+            ->with('choices')
             ->whereHas('level', function (Builder $query) use ($levelId) {
                 $query->where('id', $levelId);
             })
@@ -43,17 +42,12 @@ class QuestionController extends BaseController
     }
 
 
-    public function edit(Request $request, $id)
+    public function edit(QuestionRequest $request, Question $question)
     {
-        $category = Question::find($id);
-        if ($category != null) {
-            if ($request->input('name') != "") {
-                $category->name = $request->input("name");
-                $category->save();
-                return response()->json(['message' => 'category updated successfully'], 200);
-            }
-        }
-        return response()->json(['message' => "categories with id $id not found"], 404);
+        $validated = $request->validated();
+        $question->update($validated);
+        return $this->sendSuccess([$question], "updated question successful");
+
     }
     public function destroy(Question $question)
     {

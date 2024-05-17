@@ -17,7 +17,7 @@ class ExamDate extends Model
         'created_at',
         'updated_at',
     ];
-    public function pdfs():HasMany{
-        return $this->hasMany(Pdf::class);
+    public function subjects():HasMany{
+        return $this->hasMany(Subject::class);
     }
 }

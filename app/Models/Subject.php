@@ -5,7 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
-class Pdf extends Model
+class Subject extends Model
 {
     /** The table associated with the model.
      *
@@ -13,16 +13,18 @@ class Pdf extends Model
      */
     protected $table = 'pdfs';
 
+    protected $fillable = ['category_id' , 'exam_date_id', 'pdfUrl'];
+
     protected $hidden = [
         'created_at',
         'updated_at',
     ];
     public function category(): BelongsTo
     {
-        return $this->belongsTo(Category::class, 'category_id');
+        return $this->belongsTo(Category::class);
     }
     public function examdate(): BelongsTo
     {
-        return $this->belongsTo(ExamDate::class, 'examdate_id');
+        return $this->belongsTo(ExamDate::class);
     }
 }

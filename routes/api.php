@@ -6,6 +6,7 @@ use App\Http\Controllers\LevelController;
 use App\Http\Controllers\PdfController;
 use App\Http\Controllers\QuestionController;
 use App\Http\Controllers\RankController;
+use App\Http\Controllers\SubjectController;
 use App\Http\Controllers\TypeController;
 use App\Http\Controllers\UserController;
 use Illuminate\Http\Request;
@@ -27,10 +28,10 @@ Route::middleware('auth:sanctum')->group(function () {
 
 Route::apiResource('category', CategoryController::class);
 Route::apiResource('examDate', ExamDateController::class);
-Route::apiResource('pdf', PdfController::class);
+Route::apiResource('pdf', SubjectController::class);
 Route::apiResource('level', LevelController::class);
 Route::apiResource('type', TypeController::class);
-Route::get('pdf/{examdate_id}/{category_id}', [PdfController::class, 'show']);
-Route::get('pdfType/{type_id}', [PdfController::class, 'showByType']);
+Route::get('pdf/{examdate_id}/{category_id}', [SubjectController::class, 'show']);
+Route::get('pdfType/{type_id}', [SubjectController::class, 'showByType']);
 
 

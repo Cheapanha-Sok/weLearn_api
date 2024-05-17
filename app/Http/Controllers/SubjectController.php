@@ -2,29 +2,29 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Controllers\Response\BaseController;
+use App\Http\Requests\SubjectRequest;
 use App\Models\Category;
 use App\Models\ExamDate;
 use App\Models\Pdf;
+use App\Models\Subject;
 use CloudinaryLabs\CloudinaryLaravel\Facades\Cloudinary;
+use Illuminate\Contracts\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
-class PdfController extends Controller
+class SubjectController extends BaseController
 {
     public function show(int $examDateId, int $categoryId)
     {
-        $pdf = DB::table('pdfs')
-            ->join('categories', 'pdfs.category_id', '=', 'categories.id')
-            ->join('exam_dates', 'pdfs.exam_date_id', '=', 'exam_dates.id')
-            ->select('pdfs.id', 'pdfs.pdfUrl', 'categories.name as categoryName', 'exam_dates.name as examDate')
-            ->where('pdfs.exam_date_id', $examDateId)
-            ->where('pdfs.category_id', $categoryId)
-            ->first();
 
-        if (!$pdf) {
-            return response(['message' => 'PDF not found'], 404);
-        }
-        return response()->json($pdf);
+        $subject = Subject::with('category')->whereHas('category' , function(Builder $query) use($categoryId){
+            $query->where('id', $categoryId);
+        })->with('examdate')->whereHas('examdate' , function(Builder $query) use($examDateId){
+            $query->where('id' , $examDateId);
+        })->get();
+
+        return $this->sendSuccess($subject , "fetch object subject");
     }
 
     public function showByType(int $typeId)
@@ -55,35 +55,24 @@ class PdfController extends Controller
     }
 
 
-    public function store(Request $request)
+    public function store(SubjectRequest $request)
     {
-        try {
-            $request->validate([
-                'file' => ['required', 'file'],
-                'examDateId' => ['required', 'int'],
-                'categoryId' => ['required', 'int'],
-            ]);
-            $category = Category::findOrFail($request->input('categoryId'));
-            $examDate = ExamDate::findOrFail($request->input('examDateId'));
-            $response = cloudinary()->upload($request->file('file')->getRealPath(), [
-                'folder' => "pdf"
-            ])->getSecurePath();
-            $pdf = new Pdf();
-            $pdf->pdfUrl = $response;
-            $pdf->exam_date_id = $examDate->id;
-            $pdf->category_id = $category->id;
-            $pdf->save();
+        $validated = $request->validated();
+        $response = cloudinary()->upload($request->file('file')->getRealPath(), [
+            'folder' => "pdf"
+        ])->getSecurePath();
+        $pdf = Subject::create([
+            'category_id' => $validated['category_id'],
+            'exam_date_id' => $validated['exam_date_id'],
+            'pdfUrl' => $response
+        ]);
 
-            return response()->json(['message' => 'PDF stored successfully'], 200);
-        } catch (error) {
-            return response()->json(['error' => 'error during create new bakdoub'], 500);
-        }
-
+        return $this->sendSuccess([$pdf], "create subject successful");
     }
 
     public function destroy(int $id)
     {
-        $pdf = Pdf::find($id);
+        $pdf = Subject::find($id);
         if ($pdf) {
             $url = $pdf->pdfUrl;
             $parts = explode('/', $url);
@@ -103,7 +92,7 @@ class PdfController extends Controller
     public function edit(Request $request)
     {
         try {
-            $pdf = Pdf::find($request->input('subjectId'));
+            $pdf = Subject::find($request->input('subjectId'));
             if ($pdf) {
                 $categoryId = $request->input('categoryId');
                 $examDateId = $request->input('examDateId');

@@ -26,9 +26,9 @@ class Category extends Model
     protected $fillable = ['name'];
 
 
-    public function pdfs(): HasMany
+    public function subjects(): HasMany
     {
-        return $this->hasMany(Pdf::class);
+        return $this->hasMany(Subject::class);
     }
     public function questions(): HasMany
     {
