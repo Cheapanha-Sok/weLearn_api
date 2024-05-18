@@ -20,7 +20,7 @@ class QuestionResource extends JsonResource
             'point'=>$this->level->point,
             'isGraduate' =>$this->isGraduate,
             'level'=>$this->level,
-            'category'=>$this->category,
+            'category'=>new CategoryResource($this->whenLoaded('category')),
             'choices'=> ChoiceResource::collection($this->whenLoaded('choices'))
         ];
     }

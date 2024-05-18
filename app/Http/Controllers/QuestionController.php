@@ -24,12 +24,8 @@ class QuestionController extends BaseController
         $completedQuestionIds = $this->getUserCompleteQuestion();
         $questions = Question::where('isGraduate', $user->isGraduate)
             ->with('choices')
-            ->whereHas('level', function (Builder $query) use ($levelId) {
-                $query->where('id', $levelId);
-            })
-            ->whereHas('category', function (Builder $query) use ($categoryId) {
-                $query->where('id', $categoryId);
-            })
+            ->where('category_id', $categoryId)
+            ->where('level_id', $levelId)
             ->whereNotIn('id', $completedQuestionIds)
             ->get();
         $randomTenQuestion = $questions->shuffle()->take(10)->values();
@@ -46,6 +42,15 @@ class QuestionController extends BaseController
     }
 
 
+    public function listQuestionAdmin($categoryId, $levelId)
+    {
+        $questions = Question::
+            with('choices')
+            ->where('category_id', $categoryId)->where('level_id', $levelId)
+            ->get();
+        return $this->sendSuccess(QuestionResource::collection($questions), "fetch question list");
+
+    }
     public function update(QuestionRequest $request, Question $question)
     {
 

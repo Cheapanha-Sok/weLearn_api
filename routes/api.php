@@ -26,6 +26,7 @@ Route::middleware('auth:sanctum')->group(function () {
         
     ]);
     Route::get('question/{category_id}/{level_id}', [QuestionController::class, 'show']);
+    Route::get('/{category_id}/{level_id}' , [QuestionController::class , 'listQuestionAdmin']);
 });
 
 Route::apiResource('category', CategoryController::class);
