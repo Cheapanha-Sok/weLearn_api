@@ -4,7 +4,7 @@ namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class SubjectRequest extends FormRequest
+class ScholarshipRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -22,9 +22,9 @@ class SubjectRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'file' => 'required|file',
-            'category_id' => 'required|int|min:1',
-            'exam_date_id' => 'required|int|min:1'
+            'description' => 'required|string',
+            'post_at' => 'required',
+            'link' => 'required|string'
         ];
     }
 }

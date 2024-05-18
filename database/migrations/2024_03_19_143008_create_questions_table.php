@@ -14,7 +14,7 @@ return new class extends Migration {
     {
         Schema::create('questions', function (Blueprint $table) {
             $table->id();
-            $table->string("name");
+            $table->string("name")->unique();
             $table->boolean("isGraduate")->default(false);
             $table->foreignIdFor(Level::class)->constrained();
             $table->foreignIdFor(Category::class)->constrained();

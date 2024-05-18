@@ -13,18 +13,16 @@ use Illuminate\Support\Facades\Auth;
 
 class QuestionController extends BaseController
 {
+    private function getUserIdentity()
+    {
+        return Auth::user();
+
+    }
     public function show($categoryId, $levelId)
     {
-        $user = Auth::user();
-        $indentityUser = $user->isGraduate;
-
-        // Fetch question IDs that the user has already completed
-        $completedQuestionIds = UserQuestion::where('user_id', $user->id)
-            ->pluck('question_id')
-            ->toArray();
-
-        // Fetch questions excluding the completed ones
-        $questions = Question::where('isGraduate', $indentityUser)
+        $user = $this->getUserIdentity();
+        $completedQuestionIds = $this->getUserCompleteQuestion();
+        $questions = Question::where('isGraduate', $user->isGraduate)
             ->with('choices')
             ->whereHas('level', function (Builder $query) use ($levelId) {
                 $query->where('id', $levelId);
@@ -32,20 +30,41 @@ class QuestionController extends BaseController
             ->whereHas('category', function (Builder $query) use ($categoryId) {
                 $query->where('id', $categoryId);
             })
-            ->whereNotIn('id', $completedQuestionIds) // Exclude completed questions
+            ->whereNotIn('id', $completedQuestionIds)
             ->get();
-
-        // Shuffle and take 10 questions
         $randomTenQuestion = $questions->shuffle()->take(10)->values();
 
         return $this->sendSuccess(QuestionResource::collection($randomTenQuestion), "fetch question list");
     }
 
-
-    public function edit(QuestionRequest $request, Question $question)
+    private function getUserCompleteQuestion()
     {
-        $validated = $request->validated();
-        $question->update($validated);
+        $user = $this->getUserIdentity();
+        return UserQuestion::where('user_id', $user->id)
+            ->pluck('question_id')
+            ->toArray();
+    }
+
+
+    public function update(QuestionRequest $request, Question $question)
+    {
+
+        $request->validated();
+        $question->update([
+            ...$request->except('choices')
+        ]);
+        $choicesData = $request->input('choices', []);
+
+        // Update choices
+        foreach ($choicesData as $choiceData) {
+            if (isset($choiceData['id'])) {
+                // If the choice has an ID, update the existing record
+                $choice = $question->choices()->find($choiceData['id']);
+                if ($choice) {
+                    $choice->update($choiceData);
+                }
+            }
+        }
         return $this->sendSuccess([$question], "updated question successful");
 
     }
@@ -71,7 +90,7 @@ class QuestionController extends BaseController
         }
         // Save the choices
         $this->saveChoice($choices);
-        return $this->sendSuccess('question create successfully');
+        return $this->sendSuccess([$question], 'question create successfully');
     }
 
     private function saveChoice($choices)

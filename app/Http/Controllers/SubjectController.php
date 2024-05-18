@@ -14,7 +14,7 @@ use Illuminate\Http\Request;
 
 class SubjectController extends BaseController
 {
-    public function show(int $examDateId, int $categoryId)
+    public function showPdf(int $examDateId, int $categoryId)
     {
 
         $subject = Subject::with(['category', 'examdate'])->
@@ -22,7 +22,7 @@ class SubjectController extends BaseController
         return $this->sendSuccess(new SubjectResource($subject), "fetch subject object");
     }
 
-    public function showByType(int $typeId)
+    public function show(int $typeId)
     {
         $subjects = Subject::with(['category', 'examdate'])->
             whereHas('category.types', function (Builder $query) use ($typeId) {
@@ -56,7 +56,7 @@ class SubjectController extends BaseController
         $res = Cloudinary::destroy("pdf/$publicId");
         if ($res['result'] == 'ok') {
             $subject->delete();
-            return $this->sendSuccess("remove subject success");
+            return $this->sendSuccess([],"remove subject success");
         } else
             return $this->sendError("Something when wrong during remove pdf from cloud");
 

@@ -18,6 +18,9 @@ class QuestionResource extends JsonResource
             'id' => $this->id,
             'name'=> $this->name,
             'point'=>$this->level->point,
+            'isGraduate' =>$this->isGraduate,
+            'level'=>$this->level,
+            'category'=>$this->category,
             'choices'=> ChoiceResource::collection($this->whenLoaded('choices'))
         ];
     }
