@@ -42,11 +42,11 @@ class QuestionController extends BaseController
     }
 
 
-    public function listQuestionAdmin($categoryId, $levelId)
+    public function listQuestionAdmin($categoryId, $levelId, $isGraduate)
     {
         $questions = Question::
             with('choices')
-            ->where('category_id', $categoryId)->where('level_id', $levelId)
+            ->where('category_id', $categoryId)->where('level_id', $levelId)->where('isGraduate', $isGraduate)
             ->get();
         return $this->sendSuccess(QuestionResource::collection($questions), "fetch question list");
 

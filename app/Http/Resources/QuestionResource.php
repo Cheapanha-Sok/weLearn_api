@@ -16,12 +16,12 @@ class QuestionResource extends JsonResource
     {
         return [
             'id' => $this->id,
-            'name'=> $this->name,
-            'point'=>$this->level->point,
-            'isGraduate' =>$this->isGraduate,
-            'level'=>$this->level,
-            'category'=>new CategoryResource($this->whenLoaded('category')),
-            'choices'=> ChoiceResource::collection($this->whenLoaded('choices'))
+            'name' => $this->name,
+            'point' => $this->level->point,
+            'isGraduate' => $this->isGraduate,
+            'level' => $this->level,
+            'category' => $this->category,
+            'choices' => ChoiceResource::collection($this->whenLoaded('choices'))
         ];
     }
 }
