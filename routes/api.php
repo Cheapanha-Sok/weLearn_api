@@ -3,7 +3,6 @@
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\ExamDateController;
 use App\Http\Controllers\LevelController;
-use App\Http\Controllers\PdfController;
 use App\Http\Controllers\QuestionController;
 use App\Http\Controllers\RankController;
 use App\Http\Controllers\ScholarshipController;
@@ -34,6 +33,7 @@ Route::apiResource('examDate', ExamDateController::class);
 Route::apiResource('subject', SubjectController::class);
 Route::apiResource('level', LevelController::class);
 Route::apiResource('type', TypeController::class);
+Route::get('subject/{type_id}/{exam_date_id}' , [SubjectController::class , 'show']);
 Route::get('pdf/{examdate_id}/{category_id}', [SubjectController::class, 'showPdf']);
 Route::apiResource('scholarship', ScholarshipController::class);
 

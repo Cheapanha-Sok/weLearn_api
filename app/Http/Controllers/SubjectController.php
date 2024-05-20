@@ -16,15 +16,26 @@ class SubjectController extends BaseController
 {
     public function showPdf(int $examDateId, int $categoryId)
     {
+        // Fetch the subject with the given exam date and category
+        $subject = Subject::with(['category', 'examdate'])
+            ->where('category_id', $categoryId)
+            ->where('exam_date_id', $examDateId)
+            ->first();
 
-        $subject = Subject::with(['category', 'examdate'])->
-            where('category_id', $categoryId)->where('exam_date_id', $examDateId)->first();
-        return $this->sendSuccess(new SubjectResource($subject), "fetch subject object");
+        // Check if the subject is null and return an error if it is
+        if ($subject === null) {
+            return $this->sendError("subject with examdate id $examDateId and category id $categoryId not found" , [] ,404);
+        } else {
+            // If the subject is found, return a success response with the subject resource
+            return $this->sendSuccess(new SubjectResource($subject), "fetch subject object");
+        }
     }
 
-    public function show(int $typeId)
+
+    public function show(int $typeId, int $examDateId)
     {
         $subjects = Subject::with(['category', 'examdate'])->
+            where('exam_date_id', $examDateId)->
             whereHas('category.types', function (Builder $query) use ($typeId) {
                 $query->where('types.id', $typeId);
             })
@@ -56,7 +67,7 @@ class SubjectController extends BaseController
         $res = Cloudinary::destroy("pdf/$publicId");
         if ($res['result'] == 'ok') {
             $subject->delete();
-            return $this->sendSuccess([],"remove subject success");
+            return $this->sendSuccess([], "remove subject success");
         } else
             return $this->sendError("Something when wrong during remove pdf from cloud");
 
