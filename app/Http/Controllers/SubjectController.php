@@ -16,17 +16,13 @@ class SubjectController extends BaseController
 {
     public function showPdf(int $examDateId, int $categoryId)
     {
-        // Fetch the subject with the given exam date and category
         $subject = Subject::with(['category', 'examdate'])
             ->where('category_id', $categoryId)
             ->where('exam_date_id', $examDateId)
             ->first();
-
-        // Check if the subject is null and return an error if it is
         if ($subject === null) {
-            return $this->sendError("subject with examdate id $examDateId and category id $categoryId not found" , [] ,404);
+            return $this->sendError("subject with examdate id $examDateId and category id $categoryId not found",[], 404);
         } else {
-            // If the subject is found, return a success response with the subject resource
             return $this->sendSuccess(new SubjectResource($subject), "fetch subject object");
         }
     }

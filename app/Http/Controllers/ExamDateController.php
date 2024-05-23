@@ -10,7 +10,7 @@ class ExamDateController extends BaseController
 {
     public function index()
     {
-        return $this->sendSuccess(ExamDate::get(), "fetch all exam date");
+        return $this->sendSuccess(ExamDate::orderBy('name')->get(), "fetch all exam date");
     }
     public function store(ExamDateRequest $request)
     {

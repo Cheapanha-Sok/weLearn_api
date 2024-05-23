@@ -13,8 +13,8 @@ return new class extends Migration
     {
         Schema::create('scholarships', function (Blueprint $table) {
             $table->id();
-            $table->text('description')->unique();
-            $table->string('link')->unique();
+            $table->text('description');
+            $table->string('link');
             $table->dateTime('post_at');
             $table->timestamps();
         });
