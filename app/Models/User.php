@@ -6,6 +6,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
@@ -21,6 +22,7 @@ class User extends Authenticatable
      */
     protected $fillable = [
         'name',
+        'isGraduate',
         'email',
         'password',
     ];
@@ -47,9 +49,9 @@ class User extends Authenticatable
             'password' => 'hashed',
         ];
     }
-    public function rank(): HasOne
+    public function ranks(): HasMany
     {
-        return $this->hasOne(Rank::class);
+        return $this->hasMany(Rank::class);
     }
 
     public function completedQuestions(): BelongsToMany

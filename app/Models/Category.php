@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Category extends Model
 {
-     /** The table associated with the model.
+    /** The table associated with the model.
      *
      * @var string
      */
@@ -34,7 +34,12 @@ class Category extends Model
     {
         return $this->hasMany(Question::class);
     }
-    public function types() : BelongsToMany{
+    public function types(): BelongsToMany
+    {
         return $this->belongsToMany(Type::class);
+    }
+    public function ranks(): HasMany
+    {
+        return $this->hasMany(Rank::class);
     }
 }

@@ -27,10 +27,7 @@ class CategoryController extends BaseController
     {
         $validated = $request->validated();
         $category = Category::create(['name' => $validated['name']]);
-
-        $type = Type::findOrFail($validated['type_id']);
-        $category->types()->attach($type);
-
+        $category->types()->attach($validated['type_id']);
         return $this->sendSuccess([$category], "create category successfully");
     }
 

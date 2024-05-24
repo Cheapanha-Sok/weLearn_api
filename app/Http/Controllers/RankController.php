@@ -1,5 +1,4 @@
 <?php
-
 namespace App\Http\Controllers;
 
 use App\Http\Controllers\Response\BaseController;
@@ -9,6 +8,7 @@ use App\Models\Rank;
 use App\Models\UserQuestion;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 
 class RankController extends BaseController
 {
@@ -16,21 +16,29 @@ class RankController extends BaseController
     {
         $validated = $request->validated();
         $user = Auth::user();
-        $existingRank = Rank::where('user_id', $user->id)->first();
+        $categoryId = $validated['category_id'];
+        $userId = $user->id;
 
-        if ($existingRank) {
-            $existingRank->point += $validated['point'];
-            $existingRank->update();
-        } else {
-            Rank::create([
-                'user_id' => $user->id,
-                'point' => $validated['point']
-            ]);
-        }
-        $questions = $validated['questions'];
-        $this->saveCompleteQuestion($questions, $user->id);
-        return $this->sendSuccess([], "create successful");
+        DB::transaction(function () use ($validated, $userId, $categoryId) {
+            $existingRank = Rank::whereHas('user', function (Builder $query) use ($userId) {
+                $query->where('id', $userId); // Specify table name
+            })->whereHas('category', function (Builder $query) use ($categoryId) {
+                $query->where('id', $categoryId); // Specify table name
+            })->first();
 
+            if ($existingRank) {
+                $existingRank->increment('point', $validated['point']);
+            } else {
+                $newRank = Rank::create(['point' => $validated['point']]);
+                $newRank->users()->attach($userId);
+                $newRank->categories()->attach($categoryId);
+            }
+
+            $questions = $validated['questions'];
+            $this->saveCompleteQuestion($questions, $userId);
+        });
+
+        return $this->sendSuccess([], "Create successful");
     }
 
     public function saveCompleteQuestion($questions, $userId)
@@ -45,14 +53,18 @@ class RankController extends BaseController
         UserQuestion::insert($completedQuestions);
     }
 
-    public function show($isGraduate)
+    public function show($categoryId, $isGraduate)
     {
         $ranks = Rank::orderByDesc('point')->with('user')
             ->whereHas('user', function (Builder $query) use ($isGraduate) {
                 $query->where('isGraduate', $isGraduate);
-            })->limit(10)
+            })
+            ->whereHas('category', function (Builder $query) use ($categoryId) {
+                $query->where('id', $categoryId);
+            })
+            ->limit(10)
             ->get();
-        return $this->sendSuccess(RankResource::collection($ranks), "fetch user rank");
+        return $this->sendSuccess(RankResource::collection($ranks), "Fetch user rank");
     }
 
 }
