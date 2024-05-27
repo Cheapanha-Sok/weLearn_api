@@ -5,7 +5,6 @@ namespace App\Http\Controllers;
 use App\Http\Controllers\Response\BaseController;
 use App\Http\Requests\CategoryRequest;
 use App\Models\Category;
-use App\Models\Type;
 
 class CategoryController extends BaseController
 {

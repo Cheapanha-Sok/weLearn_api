@@ -8,7 +8,6 @@ use App\Http\Resources\QuestionResource;
 use App\Models\Choice;
 use App\Models\Question;
 use App\Models\UserQuestion;
-use Illuminate\Contracts\Database\Eloquent\Builder;
 use Illuminate\Support\Facades\Auth;
 
 class QuestionController extends BaseController
@@ -61,15 +60,7 @@ class QuestionController extends BaseController
         $choicesData = $request->input('choices', []);
 
         // Update choices
-        foreach ($choicesData as $choiceData) {
-            if (isset($choiceData['id'])) {
-                // If the choice has an ID, update the existing record
-                $choice = $question->choices()->find($choiceData['id']);
-                if ($choice) {
-                    $choice->update($choiceData);
-                }
-            }
-        }
+        Choice::update($choicesData);
         return $this->sendSuccess([$question], "updated question successful");
 
     }
@@ -102,6 +93,4 @@ class QuestionController extends BaseController
     {
         Choice::insert($choices);
     }
-
-
 }
