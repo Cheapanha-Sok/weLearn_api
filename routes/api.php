@@ -22,11 +22,8 @@ Route::middleware('auth:sanctum')->group(function () {
         'user' => UserController::class,
         'question' => QuestionController::class,
         'rank' => RankController::class
-
     ]);
-
     Route::get('question/{category_id}/{level_id}', [QuestionController::class, 'show']);
-    Route::get('quesionList/{category_id}/{level_id}/{isGraduate}', [QuestionController::class, 'listQuestionAdmin']);
 });
 
 Route::apiResource('category', CategoryController::class);
@@ -38,4 +35,5 @@ Route::get('subject/{type_id}/{exam_date_id}', [SubjectController::class, 'show'
 Route::get('pdf/{examdate_id}/{category_id}', [SubjectController::class, 'showPdf']);
 Route::apiResource('scholarship', ScholarshipController::class);
 Route::get('rank/{category_id}/{isGraduate}', [RankController::class, 'show']);
+Route::get('quesionList/{category_id}/{level_id}/{isGraduate}', [QuestionController::class, 'listQuestionAdmin']);
 
