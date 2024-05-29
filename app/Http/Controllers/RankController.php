@@ -21,9 +21,9 @@ class RankController extends BaseController
 
         DB::transaction(function () use ($validated, $userId, $categoryId) {
             $existingRank = Rank::whereHas('user', function (Builder $query) use ($userId) {
-                $query->where('id', $userId); // Specify table name
+                $query->where('id', $userId);
             })->whereHas('category', function (Builder $query) use ($categoryId) {
-                $query->where('id', $categoryId); // Specify table name
+                $query->where('id', $categoryId);
             })->first();
 
             if ($existingRank) {
