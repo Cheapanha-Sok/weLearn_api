@@ -20,18 +20,18 @@ class RankController extends BaseController
         $userId = $user->id;
 
         DB::transaction(function () use ($validated, $userId, $categoryId) {
-            $existingRank = Rank::whereHas('user', function (Builder $query) use ($userId) {
-                $query->where('id', $userId);
-            })->whereHas('category', function (Builder $query) use ($categoryId) {
-                $query->where('id', $categoryId);
-            })->first();
+            $existingRank = Rank::where('user_id', $userId)
+                ->where('category_id', $categoryId)
+                ->first();
 
             if ($existingRank) {
                 $existingRank->increment('point', $validated['point']);
             } else {
-                $newRank = Rank::create(['point' => $validated['point']]);
-                $newRank->users()->attach($userId);
-                $newRank->categories()->attach($categoryId);
+                Rank::create([
+                    'point' => $validated['point'],
+                    'user_id' => $userId,
+                    'category_id' => $categoryId
+                ]);
             }
 
             $questions = $validated['questions'];
@@ -53,11 +53,12 @@ class RankController extends BaseController
         UserQuestion::insert($completedQuestions);
     }
 
+
     public function show($categoryId, $isGraduate)
     {
         $ranks = Rank::orderByDesc('point')->with('user')
             ->whereHas('user', function (Builder $query) use ($isGraduate) {
-                $query->where('isGraduate', $isGraduate);
+                $query->where('is_graduate', $isGraduate);
             })
             ->whereHas('category', function (Builder $query) use ($categoryId) {
                 $query->where('id', $categoryId);

@@ -21,7 +21,7 @@ class QuestionController extends BaseController
     {
         $user = $this->getUserIdentity();
         $completedQuestionIds = $this->getUserCompleteQuestion();
-        $questions = Question::where('isGraduate', $user->isGraduate)
+        $questions = Question::where('is_graduate', $user->isGraduate)
             ->with('choices')
             ->where('category_id', $categoryId)
             ->where('level_id', $levelId)
@@ -45,7 +45,7 @@ class QuestionController extends BaseController
     {
         $questions = Question::
             with('choices')
-            ->where('category_id', $categoryId)->where('level_id', $levelId)->where('isGraduate', $isGraduate)
+            ->where('category_id', $categoryId)->where('level_id', $levelId)->where('is_graduate', $isGraduate)
             ->get();
         return $this->sendSuccess(QuestionResource::collection($questions), "fetch question list");
 
@@ -58,9 +58,15 @@ class QuestionController extends BaseController
             ...$request->except('choices')
         ]);
         $choicesData = $request->input('choices', []);
-
-        // Update choices
-        Choice::update($choicesData);
+        foreach ($choicesData as $choiceData) {
+            $choice = Choice::find($choiceData['id']);
+            if ($choice) {
+                $choice->update([
+                    'name' => $choiceData['name'],
+                    'is_correct' => $choiceData['is_correct'],
+                ]);
+            }
+        }
         return $this->sendSuccess([$question], "updated question successful");
 
     }

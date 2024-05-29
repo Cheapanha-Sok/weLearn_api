@@ -72,17 +72,17 @@ class DatabaseSeeder extends Seeder
 
 
         User::insert([
-            ['name' => "panha", "email" => "panha@gmail.com", "isGraduate" => false, "isAdmin" => true, 'password' => Hash::make('password')],
-            ['name' => "lyhuy", "email" => "lyhuy@gmail.com", "isGraduate" => false, "isAdmin" => true, 'password' => Hash::make('password')],
-            ['name' => "rady", "email" => "rady@gmail.com", "isGraduate" => false, "isAdmin" => true, 'password' => Hash::make('password')],
-            ['name' => "reaksa", "email" => "reaksa@gmail.com", "isGraduate" => false, "isAdmin" => true, 'password' => Hash::make('password')],
-            ['name' => "huy", "email" => "huy@gmail.com", "isGraduate" => false, "isAdmin" => true, 'password' => Hash::make('password')],
+            ['name' => "panha", "email" => "panha@gmail.com", "is_graduate" => true, "is_admin" => true, 'password' => Hash::make('password')],
+            ['name' => "lyhuy", "email" => "lyhuy@gmail.com", "is_graduate" => true, "is_admin" => true, 'password' => Hash::make('password')],
+            ['name' => "rady", "email" => "rady@gmail.com", "is_graduate" => true, "is_admin" => true, 'password' => Hash::make('password')],
+            ['name' => "reaksa", "email" => "reaksa@gmail.com", "is_graduate" => true, "is_admin" => true, 'password' => Hash::make('password')],
+            ['name' => "huy", "email" => "huy@gmail.com", "is_graduate" => true, "is_admin" => true, 'password' => Hash::make('password')],
         ]);
 
         for ($i = 0; $i < 5; $i++) {
             $name = "user" . ($i + 1);
             $email = "user" . ($i + 1) . "@example.com";
-            User::insert(['name' => $name, "email" => $email, "isGraduate" => false, "isAdmin" => false, 'password' => Hash::make('password')]);
+            User::insert(['name' => $name, "email" => $email, "is_graduate" => false, "is_admin" => false, 'password' => Hash::make('password')]);
         }
         Rank::insert([
             ['point' => 80, 'user_id' => 1, 'category_id' => 1],
@@ -96,26 +96,26 @@ class DatabaseSeeder extends Seeder
         ]);
 
         Question::insert([
-            ['name' => "What is 5 plus 3?", "level_id" => 1, "category_id" => 1, "isGraduate" => false],
-            ['name' => "What is 10 minus 5?", "level_id" => 1, "category_id" => 1, "isGraduate" => false],
-            ['name' => "What is 6 times 2?", "level_id" => 1, "category_id" => 1, "isGraduate" => false],
-            ['name' => "What is 12 divided by 3?", "level_id" => 1, "category_id" => 1, "isGraduate" => false],
-            ['name' => "What is 7 plus 9?", "level_id" => 1, "category_id" => 1, "isGraduate" => false],
-            ['name' => "What is 15 minus 8?", "level_id" => 1, "category_id" => 1, "isGraduate" => false],
-            ['name' => "What is 3 times 4?", "level_id" => 1, "category_id" => 1, "isGraduate" => false],
-            ['name' => "What is 20 divided by 4?", "level_id" => 1, "category_id" => 1, "isGraduate" => false],
-            ['name' => "What is 9 plus 7?", "level_id" => 1, "category_id" => 1, "isGraduate" => false],
-            ['name' => "What is 25 minus 12?", "level_id" => 1, "category_id" => 1, "isGraduate" => false],
-            ['name' => "What is 6 times 6?", "level_id" => 1, "category_id" => 1, "isGraduate" => false],
-            ['name' => "What is 36 divided by 6?", "level_id" => 1, "category_id" => 1, "isGraduate" => false],
-            ['name' => "What is 8 plus 3?", "level_id" => 1, "category_id" => 1, "isGraduate" => false],
-            ['name' => "What is 16 minus 9?", "level_id" => 1, "category_id" => 1, "isGraduate" => false],
-            ['name' => "What is 4 times 5?", "level_id" => 1, "category_id" => 1, "isGraduate" => false],
-            ['name' => "What is 40 divided by 8?", "level_id" => 1, "category_id" => 1, "isGraduate" => false],
-            ['name' => "What is 12 plus 6?", "level_id" => 1, "category_id" => 1, "isGraduate" => false],
-            ['name' => "What is 18 minus 7?", "level_id" => 1, "category_id" => 1, "isGraduate" => false],
-            ['name' => "What is 7 times 3?", "level_id" => 1, "category_id" => 1, "isGraduate" => false],
-            ['name' => "What is 21 divided by 3?", "level_id" => 1, "category_id" => 1, "isGraduate" => false]
+            ['name' => "What is 5 plus 3?", "level_id" => 1, "category_id" => 1, "is_graduate" => false],
+            ['name' => "What is 10 minus 5?", "level_id" => 1, "category_id" => 1, "is_graduate" => false],
+            ['name' => "What is 6 times 2?", "level_id" => 1, "category_id" => 1, "is_graduate" => false],
+            ['name' => "What is 12 divided by 3?", "level_id" => 1, "category_id" => 1, "is_graduate" => false],
+            ['name' => "What is 7 plus 9?", "level_id" => 1, "category_id" => 1, "is_graduate" => false],
+            ['name' => "What is 15 minus 8?", "level_id" => 1, "category_id" => 1, "is_graduate" => false],
+            ['name' => "What is 3 times 4?", "level_id" => 1, "category_id" => 1, "is_graduate" => false],
+            ['name' => "What is 20 divided by 4?", "level_id" => 1, "category_id" => 1, "is_graduate" => false],
+            ['name' => "What is 9 plus 7?", "level_id" => 1, "category_id" => 1, "is_graduate" => false],
+            ['name' => "What is 25 minus 12?", "level_id" => 1, "category_id" => 1, "is_graduate" => false],
+            ['name' => "What is 6 times 6?", "level_id" => 1, "category_id" => 1, "is_graduate" => false],
+            ['name' => "What is 36 divided by 6?", "level_id" => 1, "category_id" => 1, "is_graduate" => false],
+            ['name' => "What is 8 plus 3?", "level_id" => 1, "category_id" => 1, "is_graduate" => false],
+            ['name' => "What is 16 minus 9?", "level_id" => 1, "category_id" => 1, "is_graduate" => false],
+            ['name' => "What is 4 times 5?", "level_id" => 1, "category_id" => 1, "is_graduate" => false],
+            ['name' => "What is 40 divided by 8?", "level_id" => 1, "category_id" => 1, "is_graduate" => false],
+            ['name' => "What is 12 plus 6?", "level_id" => 1, "category_id" => 1, "is_graduate" => false],
+            ['name' => "What is 18 minus 7?", "level_id" => 1, "category_id" => 1, "is_graduate" => false],
+            ['name' => "What is 7 times 3?", "level_id" => 1, "category_id" => 1, "is_graduate" => false],
+            ['name' => "What is 21 divided by 3?", "level_id" => 1, "category_id" => 1, "is_graduate" => false]
         ]);
 
         Choice::insert([

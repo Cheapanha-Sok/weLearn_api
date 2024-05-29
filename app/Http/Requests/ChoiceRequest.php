@@ -23,7 +23,7 @@ class ChoiceRequest extends FormRequest
     {
         return [
             'name' => 'required|string|lowercase',
-            'is_correct' => 'required'
+            'is_correct' => 'required|integer'
         ];
     }
 }

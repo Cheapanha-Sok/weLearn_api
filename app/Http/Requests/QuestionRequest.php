@@ -10,8 +10,8 @@ class QuestionRequest extends FormRequest
     {
         return [
             'name' => 'required|string|lowercase',
-            'category_id' => 'required|int',
-            'level_id' => 'required|int',
+            'category_id' => 'required|integer',
+            'level_id' => 'required|integer',
             'isGraduate' => 'required',
             'choices' => 'required|array|min:3|max:3',
             'choices.*.name' => 'required|string|lowercase',

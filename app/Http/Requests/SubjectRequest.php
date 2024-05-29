@@ -23,8 +23,8 @@ class SubjectRequest extends FormRequest
     {
         return [
             'file' => 'required|file',
-            'category_id' => 'required|int|min:1',
-            'exam_date_id' => 'required|int|min:1'
+            'category_id' => 'required|integer|min:1',
+            'exam_date_id' => 'required|integer|min:1'
         ];
     }
 }

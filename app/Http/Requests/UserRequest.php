@@ -23,7 +23,7 @@ class UserRequest extends FormRequest
     {
         return [
             'name' => 'required|lowercase|min:4',
-            'isGraduate' => 'required|boolean'
+            'is_graduate' => 'required|integer'
         ];
     }
 }

@@ -23,8 +23,8 @@ class RankRequest extends FormRequest
     {
         return [
             'point' => 'required|min:0',
-            'category_id' => 'required|int',
-            'level_id' => 'required|int',
+            'category_id' => 'required|integer',
+            'level_id' => 'required|integer',
             'questions' =>'required|array'
         ];
     }

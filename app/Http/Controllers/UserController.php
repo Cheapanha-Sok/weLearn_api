@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 use App\Http\Controllers\Response\BaseController;
 use App\Http\Requests\UserRequest;
 use App\Models\Rank;
-use App\Models\User; 
+use App\Models\User;
 
 class UserController extends BaseController
 {
@@ -24,12 +24,13 @@ class UserController extends BaseController
         return $this->sendSuccess($user, "Updated user successfully");
     }
 
-
     private function resetPoint($userId)
     {
         // Find the rank record by user_id
-        $rank = Rank::where('user_id', $userId)->firstOrFail();
-        $rank->point = 0;
-        $rank->save();
+        $rank = Rank::where('user_id', $userId)->first();
+        if ($rank) {
+            $rank->point = 0;
+            $rank->save();
+        }
     }
 }

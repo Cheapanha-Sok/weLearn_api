@@ -22,7 +22,6 @@ class ExamDateController extends BaseController
     public function show(int $id)
     {
         return $this->sendSuccess(ExamDate::findOrFail($id), "get 1 exam date");
-
     }
     public function destroy(ExamDate $examDate)
     {

@@ -23,7 +23,7 @@ class LevelRequest extends FormRequest
     {
         return [
             'name' => 'required|string|lowercase|unique:levels',
-            'point' => 'required|int'
+            'point' => 'required|integer'
         ];
     }
 }

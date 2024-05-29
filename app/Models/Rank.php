@@ -4,7 +4,6 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
 class Rank extends Model
 {
@@ -16,6 +15,7 @@ class Rank extends Model
     protected $fillable = [
         'point',
         'user_id',
+        'category_id'
     ];
     protected $hidden = [
         'created_at',

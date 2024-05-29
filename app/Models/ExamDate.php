@@ -12,6 +12,7 @@ class ExamDate extends Model
      * @var string
      */
     protected $table = 'exam_dates';
+    protected $fillable = ['name'];
 
     protected $hidden = [
         'created_at',

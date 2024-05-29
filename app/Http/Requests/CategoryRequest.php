@@ -23,7 +23,7 @@ class CategoryRequest extends FormRequest
     {
         return [
             'name' => 'required|string|lowercase',
-            'type_id' => 'required|int',
+            'type_id' => 'required|integer',
         ];
     }
 }
