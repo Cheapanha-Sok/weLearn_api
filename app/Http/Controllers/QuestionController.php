@@ -76,7 +76,6 @@ class QuestionController extends BaseController
 
     public function destroy(Question $question)
     {
-        Gate::authorize('remove');
         $question->delete();
         return $this->sendSuccess([], "question remove sucessful");
     }
