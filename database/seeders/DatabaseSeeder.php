@@ -91,6 +91,7 @@ class DatabaseSeeder extends Seeder
             ['point' => 50, 'user_id' => 4, 'category_id' => 2],
             ['point' => 40, 'user_id' => 5, 'category_id' => 1],
             ['point' => 30, 'user_id' => 6, 'category_id' => 3],
+            ['point' => 30, 'user_id' => 6, 'category_id' => 2],
             ['point' => 20, 'user_id' => 7, 'category_id' => 1],
             ['point' => 10, 'user_id' => 8, 'category_id' => 3]
         ]);

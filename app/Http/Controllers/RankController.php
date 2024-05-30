@@ -43,29 +43,29 @@ class RankController extends BaseController
 
     public function saveCompleteQuestion($questions, $userId)
     {
-        $completedQuestions = [];
-        foreach ($questions as $questionId) {
-            $completedQuestions[] = [
+        $completedQuestions = array_map(function ($questionId) use ($userId) {
+            return [
                 'user_id' => $userId,
                 'question_id' => $questionId
             ];
-        }
+        }, $questions);
+
         UserQuestion::insert($completedQuestions);
     }
 
-
     public function show($categoryId, $isGraduate)
     {
-        $ranks = Rank::orderByDesc('point')->with('user')
+        $ranks = Rank::orderByDesc('point')
+            ->with('user')
             ->whereHas('user', function (Builder $query) use ($isGraduate) {
                 $query->where('is_graduate', $isGraduate);
             })
-            ->whereHas('category', function (Builder $query) use ($categoryId) {
-                $query->where('id', $categoryId);
-            })
+            ->where('category_id', $categoryId)
             ->limit(10)
             ->get();
+
         return $this->sendSuccess(RankResource::collection($ranks), "Fetch user rank");
     }
+
 
 }

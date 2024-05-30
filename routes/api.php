@@ -19,6 +19,7 @@ Route::middleware(['auth:sanctum'])->get('/currentUser', function (Request $requ
     return new UserResource(Auth::user());
 });
 
+// User Route
 Route::middleware('auth:sanctum')->group(function () { // user route
     Route::apiResources([
         'user' => UserController::class,
@@ -27,7 +28,8 @@ Route::middleware('auth:sanctum')->group(function () { // user route
     Route::get('question/{category_id}/{level_id}', [QuestionController::class, 'show']);
 
 });
-Route::middleware('auth:sanctum')->middleware(AdminMiddleware::class)->group(function () { // admin route
+// Admin Route
+Route::middleware('auth:sanctum')->middleware(AdminMiddleware::class)->group(function () {
     Route::post('category', [CategoryController::class, 'store']);
     Route::put('category/{id}', [CategoryController::class, 'update']);
     Route::delete('category/{id}', [CategoryController::class, 'destroy']);
@@ -56,7 +58,7 @@ Route::middleware('auth:sanctum')->middleware(AdminMiddleware::class)->group(fun
     Route::delete('question/{id}', [QuestionController::class, 'destroy']);
     Route::get('quesionList/{category_id}/{level_id}/{isGraduate}', [QuestionController::class, 'listQuestionAdmin']);
 });
-
+// Public Route
 Route::group([], function () {
     Route::get('level', [LevelController::class, 'index']);
     Route::get('category', [CategoryController::class, 'index']);
@@ -67,13 +69,3 @@ Route::group([], function () {
     Route::get('pdf/{examdate_id}/{category_id}', [SubjectController::class, 'showPdf']);
     Route::get('rank/{category_id}/{isGraduate}', [RankController::class, 'show']);
 });
-
-
-
-// Route::group([], function () {
-//     Route::get([
-//         'subject/{type_id}/{exam_date_id}' => [SubjectController::class, 'show'],
-//         'pdf/{examdate_id}/{category_id}' => [SubjectController::class, 'showPdf'],
-//         'rank/{category_id}/{isGraduate}' => [RankController::class, 'show']
-//     ]);
-// });

@@ -21,7 +21,7 @@ class QuestionController extends BaseController
     {
         $user = $this->getUserIdentity();
         $completedQuestionIds = $this->getUserCompleteQuestion();
-        $questions = Question::where('is_graduate', $user->isGraduate)
+        $questions = Question::where('is_graduate', $user->is_graduate)
             ->with('choices')
             ->where('category_id', $categoryId)
             ->where('level_id', $levelId)
