@@ -12,7 +12,7 @@ class QuestionRequest extends FormRequest
             'name' => 'required|string|lowercase',
             'category_id' => 'required|integer',
             'level_id' => 'required|integer',
-            'isGraduate' => 'required',
+            'is_graduate' => 'required',
             'choices' => 'required|array|min:3|max:3',
             'choices.*.name' => 'required|string|lowercase',
             'choices.*.is_correct' => 'required',

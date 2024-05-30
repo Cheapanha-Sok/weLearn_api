@@ -9,6 +9,7 @@ use App\Models\Choice;
 use App\Models\Question;
 use App\Models\UserQuestion;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Gate;
 
 class QuestionController extends BaseController
 {
@@ -58,20 +59,24 @@ class QuestionController extends BaseController
             ...$request->except('choices')
         ]);
         $choicesData = $request->input('choices', []);
+
+        // Update choices
         foreach ($choicesData as $choiceData) {
-            $choice = Choice::find($choiceData['id']);
-            if ($choice) {
-                $choice->update([
-                    'name' => $choiceData['name'],
-                    'is_correct' => $choiceData['is_correct'],
-                ]);
+            if (isset($choiceData['id'])) {
+                // If the choice has an ID, update the existing record
+                $choice = $question->choices()->find($choiceData['id']);
+                if ($choice) {
+                    $choice->update($choiceData);
+                }
             }
         }
         return $this->sendSuccess([$question], "updated question successful");
 
     }
+
     public function destroy(Question $question)
     {
+        Gate::authorize('remove');
         $question->delete();
         return $this->sendSuccess([], "question remove sucessful");
     }

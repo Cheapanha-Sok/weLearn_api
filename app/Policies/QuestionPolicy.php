@@ -3,19 +3,18 @@
 namespace App\Policies;
 
 use App\Models\User;
-use Illuminate\Auth\Access\Response;
 
 class QuestionPolicy
 {
     /**
-     * Determine if the given user can create posts.
+     * Create a new policy instance.
      */
-    public function createQuestion(User $user): bool
+    public function __construct()
     {
-        return $user->isAdmin;
+        //
     }
-    public function updateQuestion(User $user): bool
-    {
-        return $user->isAdmin;
+    public function remove(User $user){
+        
+        return $user && $user->is_admin === 1;
     }
 }

@@ -14,7 +14,7 @@ class Question extends Model
      * @var string
      */
     protected $table = 'questions';
-    protected $fillable = ['name', 'category_id', 'level_id', 'isGraduate'];
+    protected $fillable = ['name', 'category_id', 'level_id', 'is_graduate'];
 
     protected $hidden = [
         'created_at',
