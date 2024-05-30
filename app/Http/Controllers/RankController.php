@@ -61,6 +61,7 @@ class RankController extends BaseController
                 $query->where('is_graduate', $isGraduate);
             })
             ->where('category_id', $categoryId)
+            ->where('point' , ">" , 0)
             ->limit(10)
             ->get();
 
